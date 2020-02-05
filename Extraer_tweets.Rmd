@@ -1,0 +1,17 @@
+---
+title: "Extracción de tweets usando R"
+author: "Freddy F. Tapia C."
+date: "5/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Usando Web Scarping
+
+## Usando Google Sheets
+
+## Usando API de Twitter
+
