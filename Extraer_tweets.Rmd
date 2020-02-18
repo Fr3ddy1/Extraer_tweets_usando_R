@@ -1,7 +1,7 @@
 ---
 title: "Extracción de tweets usando R"
 author: "Freddy F. Tapia C."
-date: "5/2/2020"
+date: "18/2/2020"
 output: html_document
 ---
 
@@ -9,9 +9,96 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Usando Web Scarping
+A continuación se explicará el proceso de como extraer información (tweets) a partir de Twitter mediante dos formas diferentes. La data obtenida puede ser utilizada para diversos propósitos, entre ellos es posible realizar un análisis de sentimientos a la misma con el fin que saber que es lo que piensa las personas o un usuario en específico sobre un tema en particular. En el proceso se usará el paquete "rtweet" de R y un complemento de Google Sheets denominado "Twitter Archiver".
+
+## Usando API de Twitter
+
+Para usar la API (Application Programming Interface) de Twitter, es necesario contar con una "app" en Twitter la cual nos proporcionará cuatro valores que van a ser requeridos por el paquete "rtweet". El proceso para obtener un "app" en Twitter es el siguiente,
+
+1) Contar con una cuenta en Twitter. De no contar con ella, puede crearla en la siguiente <a href="https://twitter.com/signup" target="_blank">dirección</a>.
+
+2) Crear una "app" en Twitter Developers, para ingresar haga click <a href="https://developer.twitter.com/" target="_blank">aquí</a>. Luego de esto seleccionar la pestaña "Apps" y rellenar el formulario.
+
+3) Al generarse la app, es necesario crear un token, para ello hay que seleccionar la opción "Create my access token" ("Generar mi token de acceso").
+
+4) Luego de esto se generarán las siguientes claves:
+
+  * Consumer key (clave consumidor)
+
+  * Consumer secret (secreto consumidor)
+
+  * Access token (token de acceso)
+
+  * Access token secret (secreto token de acceso)
+
+Una vez obtenida esta información, ya es posible realizar consultas, directamente desde R.
+
+### Extracción de tweets de un usuario en específico
+
+```{r echo=FALSE}
+#CARGO LIBRERIA
+library(rtweet)
+
+
+# Identificación y obtención de tokens
+appname <- "Fred23"
+key     <- "js00YxGt2JFv80pkUm4Sua2gV"
+secret  <- "XOztfHJOQH8ZbP6kjp9r497QyWtifYjMY1q12TBkC1BA5KlmFv"
+acces_t <- "296864741-fvCPDE9Hqj4xXQeFtutfj05oLoD5tWUlHECLqzf2"
+access_s <- "vAlJvVZkdZvqnAhebuG7NfxpJEtXQqv4ibhpn2H11yTJT"
+
+```
+
+
+```{r echo=TRUE}
+twitter_token <- create_token(app = appname, consumer_key = key,
+                              consumer_secret = secret,
+                              access_token = acces_t ,access_secret = access_s)
+
+
+datos <- get_timeline(user = "@elonmusk", n = 3200, parse = TRUE,
+                          check = TRUE, include_rts = FALSE)
+
+datos$text[1:5]
+
+
+```
+
+### Extracción de tweets sobre un tema cualquiera
+
+
+```{r echo=TRUE}
+#B) BUSCANDO UNA PALABRA CUALQUIERA
+apple <- search_tweets("apple",n=100,type = "recent")
+apple$text[1:10]
+
+```
 
 ## Usando Google Sheets
 
-## Usando API de Twitter
+Este método es una gran alternativa en caso que no se cuente con las claves que requiere la API de Twitter. El mismo es un servicio pago de Google Drive, aunque permite realizar una consulta de alguna palabra en específico, de manera gratuita. Para acceder a este complemento y obtener la data que se desea se deben seguir los siguientes pasos,
+
+1) Ingresar a Google Drive y abrir una hoja de cálculo en blanco.
+2) Agregar el complemento Twitter Archiver, el cual se encuentra en los complementos de Google Sheets, para ingresar haga click <a href="https://gsuite.google.com/marketplace" target="_blank">aquí</a>. 
+3) Una vez agregado el complemento, ir a la pestaña "complementos" de la hoja de cálculo y selecionar "Twitter Archiver", luego de esto elegir "Create Rule".
+4) Luego de esto rellenar la información necesaria y dar click en "Create Search Rule".
+5) Una vez creada la busqueda, la hoja de cálculo se rellenará de forma automática y la misma podrá ser descargada en diferentes formatos.
+
+
+```{r echo=TRUE}
+#2) USANDO GOOGLE SHEETS
+tweets <- read.csv(paste0(getwd(),"/Datos/tweets.csv"),header = FALSE)
+
+dim(tweets)
+
+```
+
+
+
+
+
+
+
+
+
 
