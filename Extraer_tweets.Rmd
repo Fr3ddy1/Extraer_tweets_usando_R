@@ -50,6 +50,13 @@ access_s <- "vAlJvVZkdZvqnAhebuG7NfxpJEtXQqv4ibhpn2H11yTJT"
 ```
 
 
+La función que nos ayudará a extraer los tweets será "get_timeline", cuyos parámetros principales son,
+
+* **user**: nombre de usuario a consultar.
+* **n**: número de tweets a extraer cada vez, el valor por defecto es 100. Este valor no debe exceder los 3200.
+* **parse**: valor lógico que indica si el retorno debe ser un data.frame (TRUE) ó una lista (FALSE).
+* **check**: valor lógico que indica si se quiere comprobar la tasa límite disponible.
+
 ```{r echo=TRUE}
 twitter_token <- create_token(app = appname, consumer_key = key,
                               consumer_secret = secret,
@@ -57,7 +64,7 @@ twitter_token <- create_token(app = appname, consumer_key = key,
 
 
 datos <- get_timeline(user = "@elonmusk", n = 3200, parse = TRUE,
-                          check = TRUE, include_rts = FALSE)
+                          check = TRUE)
 
 datos$text[1:5]
 
@@ -66,10 +73,15 @@ datos$text[1:5]
 
 ### Extracción de tweets sobre un tema cualquiera
 
+Para la extracción de tweets que contengan una palabra cualquiera, hay que usar la función "search_tweets", cuyos principales parámetros son,
+
+* **q**: query a ser buscado, puede ser una palabra o una cadena de caracteres, donde se especifique las palabras a ser buscadas.
+* **n**: número total de tweets a ser extraidos, el valor por defecto es 100. EL valor máximo a extraer por cada token es de 18.000 tweets.
+* **type**: caracter que indica reciente ("recent"), mixto ("mixed") ó popular ("popular").
 
 ```{r echo=TRUE}
 #B) BUSCANDO UNA PALABRA CUALQUIERA
-apple <- search_tweets("apple",n=100,type = "recent")
+apple <- search_tweets(q = "apple",n=100,type = "recent")
 apple$text[1:10]
 
 ```
@@ -93,6 +105,7 @@ dim(tweets)
 
 ```
 
+Es importante tener en cuenta la diferencia de los tres métodos....
 
 
 

@@ -388,13 +388,20 @@ summary {
 <p>Una vez obtenida esta información, ya es posible realizar consultas, directamente desde R.</p>
 <div id="extracción-de-tweets-de-un-usuario-en-específico" class="section level3">
 <h3>Extracción de tweets de un usuario en específico</h3>
+<p>La función que nos ayudará a extraer los tweets será “get_timeline”, cuyos parámetros principales son,</p>
+<ul>
+<li><strong>user</strong>: nombre de usuario a consultar.</li>
+<li><strong>n</strong>: número de tweets a extraer cada vez, el valor por defecto es 100. Este valor no debe exceder los 3200.</li>
+<li><strong>parse</strong>: valor lógico que indica si el retorno debe ser un data.frame (TRUE) ó una lista (FALSE).</li>
+<li><strong>check</strong>: valor lógico que indica si se quiere comprobar la tasa límite disponible.</li>
+</ul>
 <pre class="r"><code>twitter_token &lt;- create_token(app = appname, consumer_key = key,
                               consumer_secret = secret,
                               access_token = acces_t ,access_secret = access_s)
 
 
 datos &lt;- get_timeline(user = &quot;@elonmusk&quot;, n = 3200, parse = TRUE,
-                          check = TRUE, include_rts = FALSE)
+                          check = TRUE)
 
 datos$text[1:5]</code></pre>
 <pre><code>## [1] &quot;@PicklePunchD @LaurenRow5 @archillect Tim Curry ftw&quot;                    
@@ -405,19 +412,25 @@ datos$text[1:5]</code></pre>
 </div>
 <div id="extracción-de-tweets-sobre-un-tema-cualquiera" class="section level3">
 <h3>Extracción de tweets sobre un tema cualquiera</h3>
+<p>Para la extracción de tweets que contengan una palabra cualquiera, hay que usar la función “search_tweets”, cuyos principales parámetros son,</p>
+<ul>
+<li><strong>q</strong>: query a ser buscado, puede ser una palabra o una cadena de caracteres, donde se especifique las palabras a ser buscadas.</li>
+<li><strong>n</strong>: número total de tweets a ser extraidos, el valor por defecto es 100. EL valor máximo a extraer por cada token es de 18.000 tweets.</li>
+<li><strong>type</strong>: caracter que indica reciente (“recent”), mixto (“mixed”) ó popular (“popular”).</li>
+</ul>
 <pre class="r"><code>#B) BUSCANDO UNA PALABRA CUALQUIERA
-apple &lt;- search_tweets(&quot;apple&quot;,n=100,type = &quot;recent&quot;)
+apple &lt;- search_tweets(q = &quot;apple&quot;,n=100,type = &quot;recent&quot;)
 apple$text[1:10]</code></pre>
-<pre><code>##  [1] &quot;Bill clinton started the housing crisis. Followed by Dems demanding everybody is entitled to a house, even if they cannot afford it. In 1999, President Bill Clinton signed into law Gramm-Leach-Bliley Act, which repealed portions of the Glass-Steagall Act. https://t.co/FMCJZUmNxb&quot;
-##  [2] &quot;1. water\n2. apple juice\n3. cranberry juice\n4. fruit punch arizona\n5. hot chocolate https://t.co/TtvbnHLOtk&quot;                                                                                                                                                                         
-##  [3] &quot;// T H E B I R T H D A Y P A R T Y – T O M O R R O W 5 P M G M T // @Beats1 @zanelowe L O V E https://t.co/J40EV6vECL https://t.co/cLNZeR7Pe8&quot;                                                                                                                                          
-##  [4] &quot;@pitchfork\nQuick Links &lt;U+2B07&gt;&lt;U+FE0F&gt;\n\n&lt;U+F8FF&gt; Music: https://t.co/H7EP9Iiex0\nSpotify: https://t.co/2yAnFa92QX\n\nLove, https://t.co/jrAhAggeE5&quot;                                                                                                                                 
-##  [5] &quot;#jaiye is out now. You should check it out\nhttps://t.co/Hx0f4q0aqu\n\nhttps://t.co/W5vY4Bm97D\n\nhttps://t.co/L0ttE5ZCAZ\n\nhttps://t.co/eZq4ef8koM\n\nhttps://t.co/iY8ulU2vRY&quot;                                                                                                        
-##  [6] &quot;#Jaiye by @Donitchi7 is available on the following platforms. What a banger? &lt;U+0001F525&gt;\n\nhttps://t.co/DLPyMXpP88\n\nhttps://t.co/vxAt82ySWF\n\nhttps://t.co/YKVpnQbXKW\n\nhttps://t.co/wJ8kRftWLV\n\nhttps://t.co/NCKc0Lt4a8&quot;                                                       
-##  [7] &quot;https://t.co/xxPDZpfyhx&quot;                                                                                                                                                                                                                                                                
-##  [8] &quot;Franklin Resources and Legg Mason form $1.5 trillion asset manager - @BusinessInsider https://t.co/4MtvJ08u91 #investingnews https://t.co/jKbLQ1K0Zq&quot;                                                                                                                                   
-##  [9] &quot;O Corote da minha geração era o Big Apple,&quot;                                                                                                                                                                                                                                             
-## [10] &quot;Idol Coklat Silver Saya:) #taptapfish\nDownload: https://t.co/EuRi0ljjR5 https://t.co/DQRmcbIbBR&quot;</code></pre>
+<pre><code>##  [1] &quot;#Apple lanza profit warning por #CoronavirusChino \n\naqui lo que ha pasado https://t.co/V5HvDiL6dJ&quot;                                                                                                                                                   
+##  [2] &quot;&lt;U+0423&gt; Apple &lt;U+0441&gt;&lt;U+0435&gt;&lt;U+0439&gt;&lt;U+0447&gt;&lt;U+0430&gt;&lt;U+0441&gt; &lt;U+0440&gt;&lt;U+0435&gt;&lt;U+043A&gt;&lt;U+043B&gt;&lt;U+0430&gt;&lt;U+043C&gt;&lt;U+0430&gt; &lt;U+043F&gt;&lt;U+0440&gt;&lt;U+044F&gt;&lt;U+043C&gt; &lt;U+043F&gt;&lt;U+043E&gt; &lt;U+0432&gt;&lt;U+0441&gt;&lt;U+0435&gt;&lt;U+0439&gt; iOS &lt;U+0440&gt;&lt;U+0430&gt;&lt;U+0437&gt;&lt;U+043C&gt;&lt;U+0430&gt;&lt;U+0437&gt;&lt;U+0430&gt;&lt;U+043D&gt;&lt;U+0430&gt; &lt;U+043F&gt;&lt;U+043B&gt;&lt;U+043E&gt;&lt;U+0442&gt;&lt;U+043D&gt;&lt;U+044B&gt;&lt;U+043C&gt; &lt;U+0441&gt;&lt;U+043B&gt;&lt;U+043E&gt;&lt;U+0435&gt;&lt;U+043C&gt; — &lt;U+0438&gt; &lt;U+0410&gt;&lt;U+0440&gt;&lt;U+043A&gt;&lt;U+0430&gt;&lt;U+0434&gt;&lt;U+0430&gt;, &lt;U+0438&gt; &lt;U+0410&gt;&lt;U+0422&gt;&lt;U+0412&gt;+, &lt;U+0438&gt; &lt;U+041A&gt;&lt;U+0430&gt;&lt;U+0440&gt;&lt;U+0442&gt;&lt;U+0430&gt;, &lt;U+043D&gt;&lt;U+043E&gt; &lt;U+044D&gt;&lt;U+0442&gt;&lt;U+043E&gt; &lt;U+043F&gt;&lt;U+0440&gt;&lt;U+044F&gt;&lt;U+043C&gt; &lt;U+043A&gt;&lt;U+0430&gt;&lt;U+043A&gt;&lt;U+043E&gt;&lt;U+0439&gt;-&lt;U+0442&gt;&lt;U+043E&gt; &lt;U+0441&gt;&lt;U+043E&gt;&lt;U+0432&gt;&lt;U+0441&gt;&lt;U+0435&gt;&lt;U+043C&gt; &lt;U+0434&gt;&lt;U+0440&gt;&lt;U+0443&gt;&lt;U+0433&gt;&lt;U+043E&gt;&lt;U+0439&gt; &lt;U+0443&gt;&lt;U+0440&gt;&lt;U+043E&gt;&lt;U+0432&gt;&lt;U+0435&gt;&lt;U+043D&gt;&lt;U+044C&gt; &lt;U+0437&gt;&lt;U+043B&gt;&lt;U+0430&gt; https://t.co/8oJzfZQsT0&quot;
+##  [3] &quot;https://t.co/ScMirlbxzu&quot;                                                                                                                                                                                                                               
+##  [4] &quot;Spotify doubles Apple in subscribers and builds its podcast empire https://t.co/AItf4K0Ql0 https://t.co/d5RjpGGMAl&quot;                                                                                                                                    
+##  [5] &quot;Really diggin this right now https://t.co/0rt8FSAsE5&quot;                                                                                                                                                                                                  
+##  [6] &quot;Apple Watch and AirPods ordered. I’m bout to be triple para’d up!&lt;U+0001F34E&gt;&lt;U+0001F34E&gt;&lt;U+0001F34E&gt;&quot;                                                                                                                                                 
+##  [7] &quot;It’s easy to want the outcomes that make your life better, but it’s hard to make some of the decisions that will get you there. The change you need to make could come down to one simple word.\n\nListen to the podcast here: https://t.co/9naySGTQ52&quot;
+##  [8] &quot;nao tem uma pessoa da minha geração que nao ficou profundamente traumatizado com a bebida big apple https://t.co/0DI4auXYB1&quot;                                                                                                                           
+##  [9] &quot;2020&lt;U+5E74&gt;2&lt;U+6708&gt;19&lt;U+65E5&gt;\nyukipyon120116&lt;U+3055&gt;&lt;U+3093&gt;&lt;U+304C&gt;&lt;U+4E2D&gt;&lt;U+9014&gt;&lt;U+899A&gt;&lt;U+9192&gt;&lt;U+3057&gt;&lt;U+307E&gt;&lt;U+3057&gt;&lt;U+305F&gt;&lt;U+3002&gt;\n&lt;U+6642&gt;&lt;U+523B&gt; 6:34 &lt;U+899A&gt;&lt;U+9192&gt;&lt;U+6642&gt;&lt;U+9593&gt; 1&lt;U+5206&gt;\n#SleepMeister https://t.co/S2Dh6xAiaD&quot;
+## [10] &quot;Apple can now put a poop emoji on your AirPods case, for free https://t.co/Jj0dkWQyFW&quot;</code></pre>
 </div>
 </div>
 <div id="usando-google-sheets" class="section level2">
