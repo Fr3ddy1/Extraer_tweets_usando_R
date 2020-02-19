@@ -1,0 +1,171 @@
+---
+title: "Twitter en R"
+author: "Freddy F. Tapia C."
+date: "19/02/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## \textcolor{blue}{Extracción de tweets usando R}
+
+A continuación se explicará el proceso de como extraer información (tweets) a partir de Twitter mediante dos formas diferentes. La data obtenida puede ser utilizada para diversos propósitos, entre ellos es posible realizar un análisis de sentimientos a la misma con el fin que saber que es lo que piensa las personas o un usuario en específico sobre un tema en particular. En el proceso se usará el paquete "rtweet" de R y un complemento de Google Sheets denominado "Twitter Archiver".
+
+## \textcolor{blue}{Usando API de Twitter}
+
+Para usar la API (Application Programming Interface) de Twitter, es necesario contar con una "app" en Twitter la cual nos proporcionará cuatro valores (claves) que van a ser requeridos por el paquete "rtweet". El proceso para obtener un "app" en Twitter es el siguiente,
+
+1) Contar con una cuenta en Twitter. De no contar con ella, puede crearla en la siguiente [\textcolor{blue}{dirección}](https://twitter.com/signup).
+
+2) Crear una "app" en Twitter Developers, para ingresar haga click [\textcolor{blue}{aquí}](https://developer.twitter.com/). Luego de esto seleccionar la pestaña "Apps" y rellenar el formulario.
+
+3) Al generarse la app, es necesario crear un token, para ello hay que seleccionar la opción "Create my access token" ("Generar mi token de acceso").
+
+4) Luego de esto se generarán las siguientes claves:
+
+  * Consumer key (clave consumidor)
+
+  * Consumer secret (secreto consumidor)
+
+  * Access token (token de acceso)
+
+  * Access token secret (secreto token de acceso)
+
+Una vez obtenida esta información, ya es posible realizar consultas, directamente desde R.
+
+### \textcolor{blue}{Extracción de tweets de un usuario en específico}
+
+```{r echo=FALSE}
+#CARGO LIBRERIA
+library(rtweet)
+
+# Identificación y obtención de tokens
+appname <- "Fred23"
+key     <- "js00YxGt2JFv80pkUm4Sua2gV"
+secret  <- "XOztfHJOQH8ZbP6kjp9r497QyWtifYjMY1q12TBkC1BA5KlmFv"
+acces_t <- "296864741-fvCPDE9Hqj4xXQeFtutfj05oLoD5tWUlHECLqzf2"
+access_s <- "vAlJvVZkdZvqnAhebuG7NfxpJEtXQqv4ibhpn2H11yTJT"
+```
+
+
+La función que nos ayudará a extraer los tweets será "get_timeline", cuyos parámetros principales son,
+
+* **user**: nombre de usuario a consultar.
+* **n**: número de tweets a extraer cada vez, el valor por defecto es 100. Este valor no debe exceder los 3200.
+* **parse**: valor lógico que indica si el retorno debe ser un data.frame (TRUE) ó una lista (FALSE).
+* **check**: valor lógico que indica si se quiere comprobar la tasa límite disponible.
+
+Para lograr esta función logre acceder a la data hay que usar la función "create_token", a la cual se le deben pasar las cuatro claves generadas anteriormente, las cuales son "consumer_key", "consumer_secret", "access_token" y "access_secret", ademas de suministrar el valor del "appname".
+
+```{r echo=TRUE}
+twitter_token <- create_token(app = appname, consumer_key = key,
+                              consumer_secret = secret,
+                              access_token = acces_t ,access_secret = access_s)
+
+
+datos <- get_timeline(user = "@elonmusk", n = 3200, parse = TRUE,
+                          check = TRUE)
+
+datos$text[1:5]
+
+
+```
+
+Un vistazo a la data extraida se presenta a continuación,
+
+```{r echo=TRUE}
+#PRIMEROS DATOS
+head(datos$text)
+
+#NOMBRES DE COLUMNAS
+names(datos)
+
+#DIMENSION
+dim(datos)
+
+```
+
+
+### \textcolor{blue}{Extracción de tweets sobre un tema cualquiera}
+
+Para la extracción de tweets que contengan una palabra cualquiera, hay que usar la función "search_tweets", cuyos principales parámetros son,
+
+* **q**: query a ser buscado, puede ser una palabra o una cadena de caracteres, donde se especifique las palabras a ser buscadas.
+* **n**: número total de tweets a ser extraidos, el valor por defecto es 100. EL valor máximo a extraer por cada token es de 18.000 tweets.
+* **type**: caracter que indica reciente ("recent"), mixto ("mixed") ó popular ("popular").
+
+```{r echo=TRUE}
+#B) BUSCANDO UNA PALABRA CUALQUIERA
+apple <- search_tweets(q = "apple",n=100,type = "recent")
+
+```
+
+A continuación se presenta la data extraida,
+
+```{r echo=TRUE}
+#PRIMEROS DATOS
+head(apple$text)
+
+#NOMBRES DE COLUMNAS
+names(apple)
+
+#DIMENSION
+dim(apple)
+
+```
+
+## \textcolor{blue}{Usando Google Sheets}
+
+Este método es una gran alternativa en caso que no se cuente con las claves que requiere la API de Twitter. El mismo es un servicio pago de Google Drive, aunque permite realizar una consulta de alguna palabra en específico, de manera gratuita. Para acceder a este complemento y obtener la data que se desea se deben seguir los siguientes pasos,
+
+1) Ingresar a Google Drive y abrir una hoja de cálculo en blanco.
+2) Agregar el complemento Twitter Archiver, el cual se encuentra en los complementos de Google Sheets, para ingresar haga click [\textcolor{blue}{aquí}](https://gsuite.google.com/marketplace).
+3) Una vez agregado el complemento, ir a la pestaña "complementos" de la hoja de cálculo y selecionar "Twitter Archiver", luego de esto elegir "Create Rule".
+4) Luego de esto rellenar la información necesaria y dar click en "Create Search Rule".
+5) Una vez creada la busqueda, la hoja de cálculo se rellenará de forma automática y la misma podrá ser descargada en diferentes formatos.
+
+
+Una data de prueba descargada por este método se presenta a continuación,
+
+```{r echo=TRUE}
+#2) USANDO GOOGLE SHEETS
+tweets <- read.csv(paste0(getwd(),"/Datos/tweets.csv"),header = FALSE)
+
+```
+
+```{r echo=FALSE}
+#2) USANDO GOOGLE SHEETS
+n <- c("Date","Screen names","Full name","Tweet_Text", "Tweet ID", "Link(s)", "Media", "Location","Retweets", "Favorites","App", "Followers", "Follows", "Listed", "Verfied", "User Since",
+       "Location", "Bio", "Website", "Timezone", "Profile Image")
+tweets <- tweets[-1,]
+
+names(tweets) <- n
+
+```
+
+```{r echo=TRUE}
+#PRIMEROS REGISTROS
+head(tweets$Tweet_Text)
+
+#DIMENSION DEL ARCHIVO
+dim(tweets)
+
+#NOMBRES DE COLUMNAS
+names(tweets)
+
+```
+
+Es importante tener en cuenta la principal diferencia que existe en los tres métodos, la misma se centra en la cantidad de tweets extraidos. Por una parte, si se usa la API y se quiere encontrar información de un usuario en específico, 3.200 son la maxima cantidad de tweets que se podrán extraer al realizar una busqueda, aunque es posible elevar este número si se realiza más de una busqueda. Por otra parte, si se usa la API para buscar una palabra o palabras en específico, 18.000 tweets es lo que podremos conseguir, lo cual ya es un número considerable.
+
+Finalmente si se utiiza el complemento de Google Sheets es posible encontrar con una busqueda aproximadamente 3.000 tweets si la misma busqueda se repite varias veces es posible llegar a tener una base de datos con 55.000 tweets. Como se podrá ver cada método tiene sus ventajas y desventajas, así que hay que elegir uno que se adapte a nuestras necesidades.
+
+
+
+
+
+
+
+
+

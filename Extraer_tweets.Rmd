@@ -1,7 +1,7 @@
 ---
 title: "Extracción de tweets usando R"
 author: "Freddy F. Tapia C."
-date: "18/2/2020"
+date: "19/2/2020"
 output: html_document
 ---
 
@@ -13,7 +13,7 @@ A continuación se explicará el proceso de como extraer información (tweets) a
 
 ## Usando API de Twitter
 
-Para usar la API (Application Programming Interface) de Twitter, es necesario contar con una "app" en Twitter la cual nos proporcionará cuatro valores que van a ser requeridos por el paquete "rtweet". El proceso para obtener un "app" en Twitter es el siguiente,
+Para usar la API (Application Programming Interface) de Twitter, es necesario contar con una "app" en Twitter la cual nos proporcionará cuatro valores (claves) que van a ser requeridos por el paquete "rtweet". El proceso para obtener un "app" en Twitter es el siguiente,
 
 1) Contar con una cuenta en Twitter. De no contar con ella, puede crearla en la siguiente <a href="https://twitter.com/signup" target="_blank">dirección</a>.
 
@@ -57,6 +57,8 @@ La función que nos ayudará a extraer los tweets será "get_timeline", cuyos pa
 * **parse**: valor lógico que indica si el retorno debe ser un data.frame (TRUE) ó una lista (FALSE).
 * **check**: valor lógico que indica si se quiere comprobar la tasa límite disponible.
 
+Para lograr esta función logre acceder a la data hay que usar la función "create_token", a la cual se le deben pasar las cuatro claves generadas anteriormente, las cuales son "consumer_key", "consumer_secret", "access_token" y "access_secret", ademas de suministrar el valor del "appname".
+
 ```{r echo=TRUE}
 twitter_token <- create_token(app = appname, consumer_key = key,
                               consumer_secret = secret,
@@ -71,6 +73,21 @@ datos$text[1:5]
 
 ```
 
+Un vistazo a la data extraida se presenta a continuación,
+
+```{r echo=TRUE}
+#PRIMEROS DATOS
+head(datos$text)
+
+#NOMBRES DE COLUMNAS
+names(datos)
+
+#DIMENSION
+dim(datos)
+
+```
+
+
 ### Extracción de tweets sobre un tema cualquiera
 
 Para la extracción de tweets que contengan una palabra cualquiera, hay que usar la función "search_tweets", cuyos principales parámetros son,
@@ -82,7 +99,20 @@ Para la extracción de tweets que contengan una palabra cualquiera, hay que usar
 ```{r echo=TRUE}
 #B) BUSCANDO UNA PALABRA CUALQUIERA
 apple <- search_tweets(q = "apple",n=100,type = "recent")
-apple$text[1:10]
+
+```
+
+A continuación se presenta la data extraida,
+
+```{r echo=TRUE}
+#PRIMEROS DATOS
+head(apple$text)
+
+#NOMBRES DE COLUMNAS
+names(apple)
+
+#DIMENSION
+dim(apple)
 
 ```
 
@@ -97,15 +127,39 @@ Este método es una gran alternativa en caso que no se cuente con las claves que
 5) Una vez creada la busqueda, la hoja de cálculo se rellenará de forma automática y la misma podrá ser descargada en diferentes formatos.
 
 
+Una data de prueba descargada por este método se presenta a continuación,
+
 ```{r echo=TRUE}
 #2) USANDO GOOGLE SHEETS
 tweets <- read.csv(paste0(getwd(),"/Datos/tweets.csv"),header = FALSE)
 
-dim(tweets)
+```
+
+```{r echo=FALSE}
+#2) USANDO GOOGLE SHEETS
+n <- c("Date","Screen names","Full name","Tweet_Text", "Tweet ID", "Link(s)", "Media", "Location","Retweets", "Favorites","App", "Followers", "Follows", "Listed", "Verfied", "User Since",
+       "Location", "Bio", "Website", "Timezone", "Profile Image")
+tweets <- tweets[-1,]
+
+names(tweets) <- n
 
 ```
 
-Es importante tener en cuenta la diferencia de los tres métodos....
+```{r echo=TRUE}
+#PRIMEROS REGISTROS
+head(tweets$Tweet_Text)
+
+#DIMENSION DEL ARCHIVO
+dim(tweets)
+
+#NOMBRES DE COLUMNAS
+names(tweets)
+
+```
+
+Es importante tener en cuenta la principal diferencia que existe en los tres métodos, la misma se centra en la cantidad de tweets extraidos. Por una parte, si se usa la API y se quiere encontrar información de un usuario en específico, 3.200 son la maxima cantidad de tweets que se podrán extraer al realizar una busqueda, aunque es posible elevar este número si se realiza más de una busqueda. Por otra parte, si se usa la API para buscar una palabra o palabras en específico, 18.000 tweets es lo que podremos conseguir, lo cual ya es un número considerable.
+
+Finalmente si se utiiza el complemento de Google Sheets es posible encontrar con una busqueda aproximadamente 3.000 tweets si la misma busqueda se repite varias veces es posible llegar a tener una base de datos con 55.000 tweets. Como se podrá ver cada método tiene sus ventajas y desventajas, así que hay que elegir uno que se adapte a nuestras necesidades.
 
 
 
